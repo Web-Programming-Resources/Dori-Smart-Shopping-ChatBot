@@ -104,19 +104,17 @@ public class Webhook extends HttpServlet {
         System.out.println("request is as follows : ");
         System.out.println("---------------------------------");
         System.out.println("---------------------------------");
-            String requestParams = getBody(request);
-            System.out.println(requestParams);
+        String requestParams = getBody(request);
+        System.out.println(requestParams);
         System.out.println("---------------------------------");
         System.out.println("---------------------------------");
 
-        
         if (request.getMethod().equals("GET")) {
             webhookSetupDetails(request, response);
         } else if (request.getMethod().equals("POST")) {
 
             //String requestParams = getBody(request);
             //System.out.println(requestParams);
-
             FBChatBotWebhookResponse body = gson.fromJson(requestParams, FBChatBotWebhookResponse.class);
 
             if (body.getObject().equals("page")) {
@@ -297,7 +295,7 @@ public class Webhook extends HttpServlet {
         long timeOfMessage = event.getTimestamp();
         Message message = event.getMessage();
 
-        System.out.println("Received message for user " + senderID + " and page " + recipientID + " at " + timeOfMessage + " with\n\n message: " + gson.toJson(message)+"\n\n\n");
+        System.out.println("Received message for user " + senderID + " and page " + recipientID + " at " + timeOfMessage + " with\n\n message: " + gson.toJson(message) + "\n\n\n");
 
         String messageId = message.getMid();
 
@@ -307,7 +305,7 @@ public class Webhook extends HttpServlet {
 
             if (message.getText() != null) {
                 messageText = message.getText();
-                    PagesInsertData page = getStoreName(recipientID);
+                PagesInsertData page = getStoreName(recipientID);
                 if (AppConstant.messages.contains(messageText.toLowerCase(Locale.ENGLISH))) {
                     sendTextMessage(senderID, "Hello, " + page.getName() + " welcomes you", page);
                     sendTextMessage(senderID, "Choose a collection:- ", page);
@@ -345,6 +343,7 @@ public class Webhook extends HttpServlet {
 //            }
 //            }
         } else {
+            System.out.println("echo received");
 //            sendTextMessage(recipientID, "message received");
         }
 
@@ -363,18 +362,24 @@ public class Webhook extends HttpServlet {
         System.out.println(gson.toJson(messageData));
 
         AppConstant.ACCESSTOKEN = page.getAccessToken();
-        RestClient.instance.getApiService().sendTextMessage(messageData, new Callback<Response>() {
 
-            @Override
-            public void failure(RetrofitError re) {
-                System.err.println("something went wrong on facebook response");
-            }
+        if (!AppConstant.ACCESSTOKEN.isEmpty()) {
 
-            @Override
-            public void success(Response result, Response rspns) {
-                System.out.println("facebook response: " + gson.toJson(rspns));
-            }
-        });
+            RestClient.instance.getApiService().sendTextMessage(messageData, new Callback<Response>() {
+
+                @Override
+                public void failure(RetrofitError re) {
+                    System.err.println("something went wrong on facebook response");
+                }
+
+                @Override
+                public void success(Response result, Response rspns) {
+                    System.out.println("facebook response: " + gson.toJson(rspns));
+                }
+            });
+        } else {
+            System.out.println("ACCESS TOKEN should not be null");
+        }
 
     }
 
@@ -667,18 +672,24 @@ public class Webhook extends HttpServlet {
         System.out.println(gson.toJson(messageData));
 
         AppConstant.ACCESSTOKEN = page.getAccessToken();
-        RestClient.instance.getApiService().sendAttachmentToUser(messageData, new Callback<Response>() {
 
-            @Override
-            public void failure(RetrofitError re) {
-                System.err.println("something went wrong on facebook response");
-            }
+        if (!AppConstant.ACCESSTOKEN.isEmpty()) {
 
-            @Override
-            public void success(Response response, Response rspns) {
-                System.out.println("facebook response: " + gson.toJson(rspns));
-            }
-        });
+            RestClient.instance.getApiService().sendAttachmentToUser(messageData, new Callback<Response>() {
+
+                @Override
+                public void failure(RetrofitError re) {
+                    System.err.println("something went wrong on facebook response");
+                }
+
+                @Override
+                public void success(Response response, Response rspns) {
+                    System.out.println("facebook response: " + gson.toJson(rspns));
+                }
+            });
+        } else {
+            System.out.println("ACCESS TOKEN should not be null");
+        }
 
     }
 
@@ -741,18 +752,25 @@ public class Webhook extends HttpServlet {
         } else {
 
             AppConstant.ACCESSTOKEN = page.getAccessToken();
-            RestClient.instance.getApiService().sendAttachmentToUser(messageData, new Callback<Response>() {
 
-                @Override
-                public void failure(RetrofitError re) {
-                    System.err.println("something went wrong on facebook response");
-                }
+            if (!AppConstant.ACCESSTOKEN.isEmpty()) {
 
-                @Override
-                public void success(Response response, Response rspns) {
-                    System.out.println("facebook response: " + gson.toJson(rspns));
-                }
-            });
+                RestClient.instance.getApiService().sendAttachmentToUser(messageData, new Callback<Response>() {
+
+                    @Override
+                    public void failure(RetrofitError re) {
+                        System.err.println("something went wrong on facebook response");
+                    }
+
+                    @Override
+                    public void success(Response response, Response rspns) {
+                        System.out.println("facebook response: " + gson.toJson(rspns));
+                    }
+                });
+
+            } else {
+                System.out.println("ACCESS TOKEN should not be null");
+            }
         }
 
     }
@@ -879,18 +897,23 @@ public class Webhook extends HttpServlet {
                 System.out.println(gson.toJson(messageData));
 
                 AppConstant.ACCESSTOKEN = page.getAccessToken();
-                RestClient.instance.getApiService().sendAttachmentToUser(messageData, new Callback<Response>() {
 
-                    @Override
-                    public void failure(RetrofitError re) {
-                        System.err.println("something went wrong on facebook response");
-                    }
+                if (!AppConstant.ACCESSTOKEN.isEmpty()) {
+                    RestClient.instance.getApiService().sendAttachmentToUser(messageData, new Callback<Response>() {
 
-                    @Override
-                    public void success(Response response, Response rspns) {
-                        System.out.println("facebook response: " + gson.toJson(rspns));
-                    }
-                });
+                        @Override
+                        public void failure(RetrofitError re) {
+                            System.err.println("something went wrong on facebook response");
+                        }
+
+                        @Override
+                        public void success(Response response, Response rspns) {
+                            System.out.println("facebook response: " + gson.toJson(rspns));
+                        }
+                    });
+                } else {
+                    System.out.println("ACCESS TOKEN should not be null");
+                }
             } else {
                 sendTextMessage(recepientID, "something went wrong!!! Please try again.:)", page);
             }
@@ -1059,18 +1082,23 @@ public class Webhook extends HttpServlet {
             System.out.println(gson.toJson(messageData));
 
             AppConstant.ACCESSTOKEN = page.getAccessToken();
-            RestClient.instance.getApiService().sendAttachmentToUser(messageData, new Callback<Response>() {
 
-                @Override
-                public void failure(RetrofitError re) {
-                    System.err.println("something went wrong on facebook response");
-                }
+            if (!AppConstant.ACCESSTOKEN.isEmpty()) {
+                RestClient.instance.getApiService().sendAttachmentToUser(messageData, new Callback<Response>() {
 
-                @Override
-                public void success(Response response, Response rspns) {
-                    System.out.println("facebook response: " + gson.toJson(rspns));
-                }
-            });
+                    @Override
+                    public void failure(RetrofitError re) {
+                        System.err.println("something went wrong on facebook response");
+                    }
+
+                    @Override
+                    public void success(Response response, Response rspns) {
+                        System.out.println("facebook response: " + gson.toJson(rspns));
+                    }
+                });
+            } else {
+                System.out.println("ACCESS TOKEN should not be null");
+            }
         }
     }
 
@@ -1201,17 +1229,22 @@ public class Webhook extends HttpServlet {
         System.out.println(gson.toJson(messageData));
 
         AppConstant.ACCESSTOKEN = page.getAccessToken();
-        RestClient.instance.getApiService().sendTextMessageToUser(messageData, new Callback<Response>() {
 
-            @Override
-            public void failure(RetrofitError re) {
-                System.err.println("something went wrong on facebook response");
-            }
+        if (!AppConstant.ACCESSTOKEN.isEmpty()) {
+            RestClient.instance.getApiService().sendTextMessageToUser(messageData, new Callback<Response>() {
 
-            @Override
-            public void success(Response result, Response rspns) {
-                System.out.println("facebook response: " + gson.toJson(rspns));
-            }
-        });
+                @Override
+                public void failure(RetrofitError re) {
+                    System.err.println("something went wrong on facebook response");
+                }
+
+                @Override
+                public void success(Response result, Response rspns) {
+                    System.out.println("facebook response: " + gson.toJson(rspns));
+                }
+            });
+        } else {
+            System.out.println("ACCESS TOKEN should not be null");
+        }
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.mlveda.disneychatbot.models;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 /**
@@ -13,8 +14,13 @@ import java.util.ArrayList;
  */
 public class Message {
 
+    
+    @SerializedName("is_echo")
     private boolean isEcho;
+
+    @SerializedName("app_id")
     private long appId;
+
     private String mid;
     private long seq;
     private String text;
