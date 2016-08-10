@@ -80,7 +80,7 @@ public class AddPageWebhook extends HttpServlet {
 //            return;             //break flow
 //        }
 
-        String storename = "disneytoys";
+        String storename = "dakshal";
 
         try {
 //            storename = session.getAttribute("shop").toString();//request.getParameter("storename");

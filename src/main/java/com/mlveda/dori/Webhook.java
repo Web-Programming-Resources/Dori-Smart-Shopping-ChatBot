@@ -390,10 +390,10 @@ public class Webhook extends HttpServlet {
 //        MongoCollection<Product> products = db.getCollection("disneytoys.myshopify.com_products", Product.class);
         BasicDBObject document = new BasicDBObject();
         QueryBuilder qb = new QueryBuilder();
-        qb.or(new QueryBuilder().put("title").notEquals("Frontpage").get(), new QueryBuilder().put("published_at").notEquals(null).get());
+        qb.or(new QueryBuilder().put("handle").notEquals("frontpage").get(), new QueryBuilder().put("published_at").notEquals(null).get());
         document.putAll(qb.get());
 
-        FindIterable<Document> coll = db.getCollection("disneytoys.myshopify.com_collection_new").find(and(ne("title", "Frontpage"), ne("published_at", null)));
+        FindIterable<Document> coll = db.getCollection("dakshal.myshopify.com_collections").find(and(ne("title", "Frontpage"), ne("published_at", null)));
 //        FindIterable<Document> coll = db.getCollection("disneytoys.myshopify.com_collection").find(document);
 
 //        FindIterable<Document> foundDocument = coll.find(and(ne("title", "Frontpage"), ne("published_at", null)));
@@ -421,6 +421,7 @@ public class Webhook extends HttpServlet {
 //                collection.add(t);
             }
         });
+        System.out.println("Collection: " + gson.toJson(collection));
         System.out.println();
         System.out.println();
 
@@ -801,7 +802,7 @@ public class Webhook extends HttpServlet {
             int id = 0;
             System.out.println("collectionID: " + otherParams.getCollectionID() + "other params:----> " + gson.toJson(otherParams));
 
-            FindIterable<Document> coll = db.getCollection("disneytoys.myshopify.com_collection_new").find(eq("id", otherParams.getCollectionID()));
+            FindIterable<Document> coll = db.getCollection("dakshal.myshopify.com_collections").find(eq("id", otherParams.getCollectionID()));
 
             System.out.println();
             System.out.println();
@@ -1108,7 +1109,7 @@ public class Webhook extends HttpServlet {
 //        MongoCollection<Product> products = db.getCollection("disneytoys.myshopify.com_products", Product.class);
         System.out.println("collectionID: " + collectionID);
 
-        FindIterable<Document> coll = db.getCollection("disneytoys.myshopify.com_collection_mapping_new").find(eq("collection_id", collectionID));
+        FindIterable<Document> coll = db.getCollection("dakshal.myshopify.com_collects").find(eq("collection_id", collectionID));
 
         final Type collectionType = new TypeToken<ArrayList<ProductCollectionMapping>>() {
         }.getType();
@@ -1141,7 +1142,7 @@ public class Webhook extends HttpServlet {
 
         for (ProductCollectionMapping pcm : map) {
             System.out.println("productID: " + pcm.getProductId());
-            FindIterable<Document> prod = db.getCollection("disneytoys.myshopify.com_products_new").find(eq("id", pcm.getProductId()));
+            FindIterable<Document> prod = db.getCollection("dakshal.myshopify.com_products").find(eq("id", pcm.getProductId()));
             System.out.println();
             System.out.println("prod: " + prod.toString());
             System.out.println();
@@ -1176,7 +1177,7 @@ public class Webhook extends HttpServlet {
         System.out.println("collectionID: " + productID);
 
         System.out.println("productID: " + productID);
-        FindIterable<Document> prod = db.getCollection("disneytoys.myshopify.com_products_new").find(eq("id", productID));
+        FindIterable<Document> prod = db.getCollection("dakshal.myshopify.com_products").find(eq("id", productID));
         System.out.println();
         System.out.println("prod: " + prod.toString());
         System.out.println();
@@ -1215,36 +1216,36 @@ public class Webhook extends HttpServlet {
 
         return facebookPage;
     }
-
-    private void sendTextMessages(String recipientID, String messageText, PagesInsertData page) {
-
-        TextMessageResponse messageData = new TextMessageResponse(new Recipient(recipientID), new SendMessage(messageText));
-
-//        String messageData = "{recipient:{id:" + recipientID + "}, message:{text:" + messageText + "}}";
-//        JSONObject messageData = new JSONObject();
-//        JSONObject message = new JSONObject();
-//        message.put("text", messageText);
-//        messageData.put("recipient", recipient);
-//        messageData.put("message", message);
-        System.out.println(gson.toJson(messageData));
-
-        AppConstant.ACCESSTOKEN = page.getAccessToken();
-
-        if (!AppConstant.ACCESSTOKEN.isEmpty()) {
-            RestClient.instance.getApiService().sendTextMessageToUser(messageData, new Callback<Response>() {
-
-                @Override
-                public void failure(RetrofitError re) {
-                    System.err.println("something went wrong on facebook response");
-                }
-
-                @Override
-                public void success(Response result, Response rspns) {
-                    System.out.println("facebook response: " + gson.toJson(rspns));
-                }
-            });
-        } else {
-            System.out.println("ACCESS TOKEN should not be null");
-        }
-    }
+//
+//    private void sendTextMessages(String recipientID, String messageText, PagesInsertData page) {
+//
+//        TextMessageResponse messageData = new TextMessageResponse(new Recipient(recipientID), new SendMessage(messageText));
+//
+////        String messageData = "{recipient:{id:" + recipientID + "}, message:{text:" + messageText + "}}";
+////        JSONObject messageData = new JSONObject();
+////        JSONObject message = new JSONObject();
+////        message.put("text", messageText);
+////        messageData.put("recipient", recipient);
+////        messageData.put("message", message);
+//        System.out.println(gson.toJson(messageData));
+//
+//        AppConstant.ACCESSTOKEN = page.getAccessToken();
+//
+//        if (!AppConstant.ACCESSTOKEN.isEmpty()) {
+//            RestClient.instance.getApiService().sendTextMessageToUser(messageData, new Callback<Response>() {
+//
+//                @Override
+//                public void failure(RetrofitError re) {
+//                    System.err.println("something went wrong on facebook response");
+//                }
+//
+//                @Override
+//                public void success(Response result, Response rspns) {
+//                    System.out.println("facebook response: " + gson.toJson(rspns));
+//                }
+//            });
+//        } else {
+//            System.out.println("ACCESS TOKEN should not be null");
+//        }
+//    }
 }
